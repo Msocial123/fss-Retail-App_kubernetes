@@ -11,7 +11,7 @@ pipeline {
         
     }
 
-    tool {
+    tools {
 
         nodejs "NodeJS"
 
