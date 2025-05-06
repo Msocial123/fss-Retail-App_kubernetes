@@ -20,7 +20,7 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
+        stage('Git checkout') {
             steps {
                 git url: 'https://github.com/hanzel-sc/fss-Retail-App_kubernetes.git', branch: 'test'
             }
@@ -67,7 +67,7 @@ pipeline {
 
     post {
         failure {
-            echo 'Build failed!'
+            echo 'Build failed! Check Jenkins logs'
         }
         success {
             echo 'Successfully deployed NodeJS application with secrets from Vault'
