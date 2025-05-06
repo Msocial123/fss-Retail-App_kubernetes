@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     sh 'pm2 delete all || true'
-                    sh "pm2 node server.js --name nodejs-backend"
+                    sh "pm2 start server.js --name nodejs-backend"
                     echo "Server is up and running"
                 }
             }
