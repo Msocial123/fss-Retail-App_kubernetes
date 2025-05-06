@@ -67,7 +67,7 @@ pipeline {
 
     post {
         failure {
-            echo 'Build failed! Check Jenkins logs'
+            echo 'Build failed! Check Jenkins logs.'
         }
         success {
             echo 'Successfully deployed NodeJS application with secrets from Vault'
