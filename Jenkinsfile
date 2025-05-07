@@ -71,7 +71,7 @@ pipeline {
             echo 'Build failed! Check Jenkins logs.'
         }
         success {
-            echo 'Successfully deployed NodeJS application with secrets from Vault.'
+            echo 'Successfully deployed NodeJS application with secrets from Vault!'
         }
     }
 }
