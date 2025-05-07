@@ -36,7 +36,7 @@ pipeline {
                             [envVar: 'EMAIL_PASS', vaultKey: 'EMAIL_PASS'],
                             [envVar: 'EMAIL_USER', vaultKey: 'EMAIL_USER'],
                             [envVar: 'PORT', vaultKey: 'PORT'],
-                            [envVar: 'MONGODB_URL', vaultKey: 'MONGODB_URL'],
+                            [envVar: 'MONGODB_URI', vaultKey: 'MONGODB_URI'],
                             [envVar: 'SESSION_SECRET', vaultKey: 'SESSION_SECRET']
                         ]
                     ]]
