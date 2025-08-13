@@ -283,5 +283,5 @@ app.get('/logout', (req, res) => {
 // Port & Server
 const PORT = 3130; // Change from process.env.PORT to 3130
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on the http://localhost:${PORT}`);
 });
