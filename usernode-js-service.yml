@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: usernode-js-service
+  namespace: abdullah
 spec:
   type: LoadBalancer  # Use NodePort if LoadBalancer is not supported
   ports:
