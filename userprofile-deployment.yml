@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: userprofile-deployment
+  namespace: abdullah
 spec:
   replicas: 1
   selector:
