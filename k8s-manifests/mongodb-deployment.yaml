@@ -1,0 +1,44 @@
+{{- if .Values.mongodb.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-mongodb-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.mongodb.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.mongodb.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.mongodb.labels.app }}
+    spec:
+      containers:
+      - name: {{ .Values.mongodb.container.name }}
+        image: {{ .Values.mongodb.image.repository }}:{{ .Values.mongodb.image.tag }}
+        imagePullPolicy: {{ .Values.mongodb.image.pullPolicy }}
+
+        ports:
+        - containerPort: {{ .Values.mongodb.container.containerPort }}
+
+        env:
+        - name: MONGO_INITDB_DATABASE
+          value: {{ .Values.mongodb.env.database | quote }}
+        # Suggestion: Add Username/Password here
+
+        {{- if .Values.mongodb.persistence.enabled }}
+        volumeMounts:
+          - name: {{ .Values.mongodb.persistence.volumeName }}
+            mountPath: {{ .Values.mongodb.persistence.mountPath }}
+        {{- end }}
+
+      {{- if .Values.mongodb.persistence.enabled }}    
+      volumes:
+        - name: {{ .Values.mongodb.persistence.volumeName }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.mongodb.persistence.claimName }}
+      {{- end }}
+
+{{- end }}
+

@@ -1,0 +1,100 @@
+namespace: subbu-ns
+
+# -------------------------
+# User application
+# -------------------------
+userApp:
+  enabled: true
+
+  replicaCount: 5
+
+  labels:
+    app: retail-pod
+
+  container: 
+    name: retail-app-container
+    containerPort: 3130
+  
+  image:
+    repository: saiteja2502/userprofileretail
+    tag: "latest"
+    pullPolicy: Always
+
+  service:
+    app: retail-pod
+    type: ClusterIP
+    port: 3130
+
+
+# -------------------------
+# New: Probes & Init Settings
+# -------------------------
+# These settings control how Kubernetes monitors and waits for your app
+probes:
+  readiness:
+    path: /
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+  liveness:
+    path: /
+    initialDelaySeconds: 20
+    periodSeconds: 20
+    timeoutSeconds: 5
+
+initContainer:
+  enabled: true
+  image: busybox:1.28
+  retryInterval: 3
+
+#--------------------------
+#app-secrets
+#--------------------------
+app:
+  port: 3130
+  sessionSecret: "1234"
+  email:
+    user: "chagantyteja2502@gmail.com"
+    pass: "yxoq bjuk rdnt alzp"
+
+# -------------------------
+# MongoDB configuration
+# -------------------------
+mongodb:
+  enabled: true
+
+  replicaCount: 1
+
+  labels:
+    app: mongo-pod
+
+  container: 
+    name: mongodb-container
+    containerPort: 27017
+
+  image:
+    repository: mongo
+    tag: latest
+    pullPolicy: Always
+
+  env:
+    database: myDatabase
+  
+  persistence:
+    enabled: false
+    volumeName: mongo-data
+    mountPath: /data/db
+    claimName: mongo-pvc
+    size: "10Gi"
+  
+  service:
+    app: mongo-pod
+    type: ClusterIP
+    port: 27017
+  
+
+# -------------------------
+# Ingress configuration
+# -------------------------
+ingress:
+  enabled: true

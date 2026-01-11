@@ -1,0 +1,73 @@
+{{- if .Values.userApp.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: {{ .Release.Name }}-userapp-deployment
+  namespace: {{ .Values.namespace }}
+spec: 
+  replicas: {{ .Values.userApp.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.userApp.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.userApp.labels.app }}
+    spec:
+      {{- if .Values.initContainer.enabled }}
+      initContainers:
+        - name: wait-for-mongodb
+          image: {{ .Values.initContainer.image }}
+          command: 
+            - 'sh'
+            - '-c'
+            - "until nc -z {{ .Release.Name }}-mongodb-service {{ .Values.mongodb.service.port }}; do echo waiting for mongodb; sleep {{ .Values.initContainer.retryInterval }}; done"
+      {{- end }}
+
+      containers:
+        - name: {{ .Values.userApp.container.name }}
+          image: {{ .Values.userApp.image.repository }}:{{ .Values.userApp.image.tag }}
+          ports:
+            - containerPort: {{ .Values.userApp.container.containerPort }}
+
+          readinessProbe:
+            httpGet:
+              path: {{ .Values.probes.readiness.path }} 
+              port: {{ .Values.userApp.container.containerPort }}
+            initialDelaySeconds: {{ .Values.probes.readiness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.readiness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds }}
+          
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.probes.liveness.path }}
+              port: {{ .Values.userApp.container.containerPort }}
+            initialDelaySeconds: {{ .Values.probes.liveness.initialDelaySeconds }}
+            periodSeconds: {{ .Values.probes.liveness.periodSeconds }}
+            timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds }}
+
+          env:
+            - name: MONGODB_URI
+              value: "mongodb://{{ .Release.Name }}-mongodb-service:{{ .Values.mongodb.service.port }}/{{ .Values.mongodb.env.database }}"
+            
+            - name: PORT
+              value: {{ .Values.app.port | quote }}
+
+            # Sensitive data pulled from Secret (Replaces SESSION_SECRET, EMAIL_USER, EMAIL_PASS)
+            - name: SESSION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-app-secrets
+                  key: SESSION_SECRET
+            - name: EMAIL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-app-secrets
+                  key: EMAIL_USER
+            - name: EMAIL_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-app-secrets
+                  key: EMAIL_PASS
+{{- end }}
+
