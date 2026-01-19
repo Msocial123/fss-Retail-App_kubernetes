@@ -4,7 +4,7 @@ metadata:
   name: userprofile-deployment
   namespace: murali-ns
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       app: userprofile
