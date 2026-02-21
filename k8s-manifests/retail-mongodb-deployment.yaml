@@ -20,11 +20,8 @@ spec:
         - containerPort: 27017
         env:
         - name: MONGO_INITDB_DATABASE
-          value: "myDatabase"
-   #     volumeMounts:
-   #    - name: mytest-volume
-   #       mountPath: /data/db
-   #   volumes:
-   #   - name: mytest-volume
-   #     persistentVolumeClaim:
-   #       claimName: my-ebc-pvc
+          valueFrom:
+            configMapKeyRef:
+              name: retail-app-config
+              key: MONGO_INITDB_DATABASE
+
