@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: retail-mongodb
   namespace: murali-ns
 spec:
-  replicas: 1
+  serviceName: "mongodb"
+  replicas: 3
   selector:
     matchLabels:
       app: mongodb
@@ -24,4 +25,3 @@ spec:
             configMapKeyRef:
               name: retail-app-config
               key: MONGO_INITDB_DATABASE
-
