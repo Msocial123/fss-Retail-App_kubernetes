@@ -4,8 +4,8 @@ metadata:
   name: retail-mongodb
   namespace: murali-ns
 spec:
-  serviceName: "mongodb"
   replicas: 3
+  serviceName: "mongodb"
   selector:
     matchLabels:
       app: mongodb
@@ -19,9 +19,22 @@ spec:
         image: mongo:latest
         ports:
         - containerPort: 27017
+        volumeMounts:
+          - mountPath: /data/db
+            name: mongo-data
         env:
         - name: MONGO_INITDB_DATABASE
           valueFrom:
             configMapKeyRef:
               name: retail-app-config
-              key: MONGO_INITDB_DATABASE
+              key: MONGO_INITDB_DATABASE 
+  volumeClaimTemplates:  # it is referencing pvc automatically instead of refering pvc manually in the pod or yaml file
+    - metadata:
+        name: mongo-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: retail-sc
+        resources:
+          requests:
+            storage: 1Gi
+
